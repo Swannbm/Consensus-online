@@ -1,20 +1,5 @@
-stages:
-  - build
-
-test:
-  stage: test
-  script: echo "Testing the app"
-
 build:
   stage: build
   script:
   - echo "Building the app"
   - docker build . -t consensus
-
-deploy_staiging:
-  stage: deploy
-  only:
-  - master
-  script:
-  - echo "Deploying the app"
-  - docker run -d -p 8000:8000 consensus
