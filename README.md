@@ -12,7 +12,7 @@ Cette application a pour objectif d'offrir à un groupe de 10 à 15 joueurs la p
 
 Une part importante sera laissée aux discussions entre les joueurs, mais il n'y aura pas (ou le moins possible) de prime aux joueurs très connectés.
 
-# Information technique
+# Information technique 
 
 Cette application est constituée d'un backoffice en Django Rest Framework et d'un front en Vue.js. 
 
