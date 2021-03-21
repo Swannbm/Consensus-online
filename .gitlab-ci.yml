@@ -1,10 +1,9 @@
 stages:
-  - test
-  - build
+  - publish
 
-test:
-  stage: test
-  script: echo "Testing the app"
+variables:
+  TAG_LATEST: $CI_REGISTRY_IMAGE/master:latest
+  TAG_COMMIT: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_NAME:$CI_COMMIT_SHORT_SHA
 
 build:
   stage: build
@@ -12,10 +11,24 @@ build:
   - echo "Building the app"
   - docker build . -t consensus
 
-deploy_staiging:
-  stage: deploy
-  only:
-  - master
+publish:
+  image: docker:latest
+  stage: publish
+  services:
+    - docker:dind
   script:
-  - echo "Deploying the app"
-  - docker run -d -p 8000:8000 consensus
+    - docker build -t $TAG_COMMIT -t $TAG_LATEST .
+    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
+    - docker push $TAG_COMMIT
+    - docker push $TAG_LATEST
+
+deploy:
+  image: alpine:latest
+  stage: deploy
+  script:
+    - chmod og= $ID_RSA
+    - apk update && apk add openssh-client
+    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY"
+    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker pull $TAG_COMMIT"
+    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker container rm -f my-app || true"
+    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker run -d -p 80:80 --name my-app $TAG_COMMIT"
