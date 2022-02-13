@@ -5,7 +5,7 @@ EXPOSE 8000
 # ENV CRYPTOGRAPHY_DONT_BUILD_RUST=1
 ENV PATH = "${PATH}:/root/.poetry/bin"
 
-RUN apk add --no-cache gcc python3-dev musl-dev libffi-dev curl
+RUN apk add --no-cache gcc python3-dev musl-dev libffi-dev curl git
 RUN pip install --upgrade pip
 RUN curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python
 RUN alias ll="ls -alh"

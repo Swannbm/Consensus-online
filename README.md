@@ -8,12 +8,6 @@ Le créateur initial était Laurent Jactat. D'autres ont participé à l'élabor
 
 ## Objectif de cette application
 
-Cette application a pour objectif d'offrir à un groupe de 10 à 15 joueurs la possibilité de jouer à Consensus au rythme d'un jeu par correspondance. Chaque tour de jeu durera une semaine et tout le monde aura le temps de discuter tranquillement et de déposer ses ordres. Il découvrira le résultat de ses actions quand il le souhaitera.
+Cette application a pour objectif d'offrir à un groupe de 10 à 15 joueurs la possibilité de jouer à Consensus au rythme d'un jeu par correspondance. Chaque tour de jeu dure une semaine et tout le monde a le temps de discuter tranquillement et de déposer ses ordres. Il découvre le résultat de ses actions quand il le souhaite.
 
-Une part importante sera laissée aux discussions entre les joueurs, mais il n'y aura pas (ou le moins possible) de prime aux joueurs très connectés.
-
-# Information technique 
-
-Cette application est constituée d'un backoffice en Django Rest Framework et d'un front en Vue.js. 
-
-
+Une part importante sera laissée aux discussions entre les joueurs, mais il n'y aura pas (ou le moins possible) de prime aux joueurs les plus connectés.

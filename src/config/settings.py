@@ -9,35 +9,64 @@ https://docs.djangoproject.com/en/3.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
-
+import environ
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
+root = environ.Path(__file__) - 2  # get root of the project
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
+BASE_DIR = Path(root())
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '*(7y@z1@poi((-2zdc((p0uh16&g5)u$hbl-l7$(ofx4c+2s85'
+# initialize env with environment variable
+# it can contains DEBUG (in production env it shall)
+# so we could explore how to load file only on local execution
+env = environ.Env()
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+env_path = BASE_DIR / ".env"
+if env_path.is_file():
+    environ.Env.read_env(str(env_path))  # reading .env file
 
-ALLOWED_HOSTS = ['*']
+SECRET_KEY = env.str("SECRET")
+
+DEBUG = env.bool("DEBUG", default=False)
+
+ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["127.0.0.1", "localhost"])
 
 
 # Application definition
 
-INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
+DJANGO_APPS = [
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+    "django.contrib.gis",
+    "django.contrib.humanize",
 ]
+
+RESTFRAMEWORK_APPS = [
+    "rest_framework",
+    "rest_framework_gis",
+]
+
+THIRD_APPS = [
+    "import_export",
+    "crispy_forms",
+]
+
+# upper app should not communicate with lower ones
+PROJECT_APPS = [
+    "users.apps.UsersConfig",
+]
+
+INSTALLED_APPS = DJANGO_APPS + RESTFRAMEWORK_APPS + THIRD_APPS + PROJECT_APPS
+
+AUTH_USER_MODEL = 'users.User'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -54,7 +83,9 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            BASE_DIR / "templates",
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
