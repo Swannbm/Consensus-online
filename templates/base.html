@@ -1,0 +1,164 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="Consensus est un jeu par correspondance lent" />
+        <meta name="author" content="Swann Bouvier-Muller" />
+        <title>{% block pagetitle %}Consensus-Online{% endblock %}</title>
+        <!-- Favicon-->
+        <link rel="icon"href="{% static 'favicon.ico' %}">
+        <!-- Core theme CSS (includes Bootstrap)-->
+        <link href="{% static 'css/styles.css' %}" rel="stylesheet" />
+        <!-- Bootstrap icon -->
+        <link rel="stylesheet" href="{% static 'icons/bootstrap-icons.css' %}">
+        <!-- subtemplate header injection -->
+        {% block headers %}{% endblock %}
+    </head>
+    <body style="overflow: hidden; height: 100vh;">
+            <!-- Page content wrapper-->
+            <div id="page-content-wrapper" class="d-flex flex-column h-100">
+                <!-- Top navigation-->
+                <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+                    <div class="container-fluid">
+                        <a class="navbar-brand ms-2" href="{% url 'home:home' %}">Consensus-Online</a>
+
+                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+
+                        <div class="collapse navbar-collapse justify-content-between" id="navbarSupportedContent">
+
+                            <ul class="navbar-nav ms-0 mt-2 mt-lg-0">
+
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" id="DropdownPlan" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Plans d'aménagement</a>
+                                    <div class="dropdown-menu" aria-labelledby="DropdownPlan">
+                                        <a class="dropdown-item" href="#">Plans publics</a>
+                                        {% if user.is_authenticated %}
+                                        <hr class="dropdown-divider" />
+                                        <a class="dropdown-item" href="#">Nouveau</a>
+                                        <a class="dropdown-item" href="#">Ouvrir</a>
+                                        {% endif %}
+                                    </div>
+                                </li>
+
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" id="DropdownProject" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Documentations</a>
+                                    <div class="dropdown-menu" aria-labelledby="DropdownProject">
+
+                                        <a class="dropdown-item" href="#">Matrice d'occupation des sols</a>
+                                        <hr class="dropdown-divider" />
+                                        <h6 class="dropdown-header">Foire Aux Questions</h6>
+                                        {% for item in menu_faq %}
+                                        <a class="dropdown-item" href="#">{{ item.menu_entry }}</a>
+                                        {% endfor %}
+                                    </div>
+                                </li>
+                            </ul>
+
+                            <ul class="navbar-nav me-0 mt-2 mt-lg-0">
+                                {% if user.is_authenticated %}
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="bi bi-person-fill"></i></a>
+                                    <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                        <a class="dropdown-item" href="{% url 'users:profile' %}">
+                                            <i class="bi bi-person-fill"></i> Profil
+                                        </a>
+                                        {% if is_staff %}
+                                        <div class="dropdown-divider"></div>
+                                        <a class="dropdown-item" href="{% url 'admin:index' %}"><i class="bi bi-gear"></i> Administration</a>
+                                        {% endif %}
+                                        <div class="dropdown-divider"></div>
+                                        <a class="dropdown-item" href="{% url 'users:disconnect' %}">
+                                            <i class="bi bi-box-arrow-right"></i> Déconnexion
+                                        </a>
+                                    </div>
+                                </li>
+                                {% else %}
+                                <li class="nav-item"><a class="nav-link" href="{% url 'users:subscription' %}">S'inscrire</a></li>
+                                <li class="nav-item"><a class="nav-link" href="{% url 'users:connect' %}">Se connecter</a></li>
+                                {% endif %}
+                            </ul>
+
+                        </div>
+                    </div>
+                </nav>
+
+                <nav class="navbar navbar-expand border-bottom" style="height:31px;">
+                    <div class="container-fluid">
+
+                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent2" aria-controls="navbarSupportedContent2" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+
+                        <div class="collapse navbar-collapse justify-content-between" id="navbarSupportedContent2" style="font-size: 0.75rem">
+                            <ul class="navbar-nav ms-0 mt-2 mt-lg-0 ps-2">
+                                <nav aria-label="breadcrumb">
+                                    <ol class="breadcrumb mb-0">
+                                    {% for bread in breadcrumbs %}
+                                        {% if bread.is_active %}
+                                        <li class="breadcrumb-item active" aria-current="page">{{ bread.title}}</li>
+                                        {% else %}
+                                        <li class="breadcrumb-item"><a href="{{ bread.href }}">{{ bread.title}}</a></li>
+                                        {% endif %}
+                                    {% endfor %}
+                                    </ol>
+                                </nav>
+                            </ul>
+
+                            <ul class="navbar-nav me-0 mt-2 mt-lg-0">
+                                {% block sub_bar_actions %}
+                                {% endblock %}
+                            </ul>
+                        </div>
+                    </div>
+                </nav>
+
+                <!-- Page content-->
+                <main class="p-0 d-flex flex-column" style="overflow: auto;">
+                    {% block carto %}
+                    <div class="mb-5">
+                        {% block content %}
+                        <div class="row justify-content-center w-100 my-0">
+                            <div class="col-12 col-md-5 col-lg-4" style="width:450px;">
+                                <h2 class="mb-5">Bonjour {{ user.greetings }} !</h2>
+                                <p>La première étape pour utiliser SPARTE est de créer un PROJET :
+                                <br/><a class="btn btn-primary" href="{% url 'project:add' %}" role="button">Créer un projet</a></p>
+                            </div>
+                        </div>
+                        {% endblock %}
+                    </div>
+                    {% endblock %}
+                </main>
+
+                <!-- Footer-->
+                {% block footer %}
+                <div id="footer" class="bg-light border-top py-5 flex-grow-1">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-2">
+                                CONSENSUS ONLINE
+                            </div>
+                            <div class="col-10">
+                                <p class="mt-5">Faites nous part de vos propositions pour améliorer ce service : formulaire de contact.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endblock footer %}
+            </div>
+
+        <script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+        <!-- Bootstrap core JS-->
+        <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+        <!-- Core theme JS-->
+        <script src="{% static 'js/scripts.js' %}"></script>
+        <script>
+        // initialize les tooltips
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip()
+        })
+        </script>
+        <!-- subtemplate footer injection -->
+        {% block bodyend %}{% endblock %}
+    </body>
+</html>
