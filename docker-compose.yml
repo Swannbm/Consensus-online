@@ -2,7 +2,7 @@ version: "3.7"
 
 services:
   db:
-    image: postgres
+    image: kartoza/postgis:13-3.1--v2021.09.08
     volumes:
       - db_data:/var/lib/postgresql/data
     environment:
@@ -54,8 +54,11 @@ services:
 
   worker-beat:
     build: .
+    volumes:
+      - .:/app
     working_dir: /app
     command: celery -A config.celery beat --loglevel=info
+    # command: tail -F anything
     env_file: .env
     depends_on:
       - redis
