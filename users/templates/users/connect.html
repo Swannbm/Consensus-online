@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block pagetitle %}Connexion{% endblock %}
+
+{% block content %}
+
+<div class="d-flex justify-content-center mt-5">
+
+  <div class="col-12 col-md-5 col-lg-4">
+    <!-- Heading -->
+    <h1 class="mb-5 fw-bold text-center">Connexion</h1>
+
+    <form action="" method="post">
+      {% csrf_token %}
+      {{ form|crispy }}
+      <button class="btn w-100 btn-primary mt-2" type="submit">Se connecter</button>
+    </form>
+
+
+
+    <!-- Text -->
+    <p class="mb-0 fs-sm text-center text-muted">
+      Pas encore de compte ? <a href="{% url 'users:subscription' %}">Inscrivez-vous</a>.
+    </p>
+  </div>
+</div>
+<!-- / .row -->
+
+{% endblock %}
