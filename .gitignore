@@ -1,3 +1,4 @@
 .python-version
 id_rsa
 .env
+*.pyc
